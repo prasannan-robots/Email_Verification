@@ -14,10 +14,10 @@ Email Verifier is a simple Python application built with Tkinter that allows you
 
 1. Clone the repository or download the source code files.
 
-2. Run the application by executing the `main.py` file:
+2. Run the application by executing the `application.py` file:
 
 ```bash
-python main.py
+python application.py
 ```
 
 3. The Email Verifier GUI will open with a terminal-like appearance.
