@@ -1,5 +1,3 @@
-Sure! Below is a sample README file that you can use for your Email Verifier application:
-
 # Email Verifier
 
 Email Verifier is a simple Python application built with Tkinter that allows you to check the validity and verify email addresses. It provides options to perform strict regex tests, test according to RFC guidelines, check the availability of the mail domain, and verify the email using smtplib.
