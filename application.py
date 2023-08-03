@@ -6,7 +6,7 @@ class EmailVerifierApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Email Verifier")
-
+        self.root.iconphoto(False, tk.PhotoImage(file='icon.png'))
         self.label_email = tk.Label(root, text="Enter an email address:")
         self.label_email.pack()
 
