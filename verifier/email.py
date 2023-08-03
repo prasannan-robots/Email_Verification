@@ -42,29 +42,41 @@ class Email_Verifier:
             records = dns.resolver.resolve(domain, 'MX')
             mxRecord = records[0].exchange
             mxRecord = str(mxRecord)
+            
             self.mxRecord = mxRecord
             return True
         except dns.resolver.NXDOMAIN:
             return False
         
-    def check_smtplib(self,input_email=None,from_address=None):
-        if input_email == None:
-            input_email = self.input_email
+    def verify_email(self,from_address=None, input_email=None):
         if from_address == None:
             from_address = self.from_address
-        # SMTP lib setup (use debug level for full output)
-        server = smtplib.SMTP()
-        server.set_debuglevel(0)
+        if input_email == None:
+            input_email = self.input_email
+        try:
+            server = smtplib.SMTP(timeout=10)  # Set a timeout for the connection
+            server.set_debuglevel(0)
 
-        # SMTP Conversation
-        server.connect(self.mxRecord)
-        server.helo(server.local_hostname) ### server.local_hostname(Get local server hostname)
-        server.mail(from_address)
-        code, message = server.rcpt(str(input_email))
-        server.quit()
-        if code == 250:
-            return True
-        else:
+            # SMTP Conversation
+            server.connect(self.mxRecord)
+            server.helo(server.local_hostname)
+            server.mail(from_address)
+            code, message = server.rcpt(str(input_email))
+            server.quit()
+
+            if code == 250:
+                return True
+            else:
+                return False
+        except smtplib.SMTPConnectError as e:
+            print(f"Failed to connect to the mail server: {e}")
             return False
-        
+        except smtplib.SMTPServerDisconnected as e:
+            print(f"Disconnected from the mail server unexpectedly: {e}")
+            return False
+        except smtplib.SMTPException as e:
+            print(f"Error occurred during the SMTP conversation: {e}")
+            return False
+
+            
 
