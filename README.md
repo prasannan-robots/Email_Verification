@@ -3,12 +3,11 @@
 Email Verifier is a simple Python application built with Tkinter that allows you to check the validity and verify email addresses. It provides options to perform strict regex tests, test according to RFC guidelines, check the availability of the mail domain, and verify the email using smtplib.
 
 ![Screenshot](image.png)
-![Verified](image-1.png)
 
 ## Requirements
 
-- Python 3.x
-- Tkinter (included with Python standard library)
+- Python 3.9+ with Tkinter (on Debian/Ubuntu: `sudo apt install python3-tk`)
+- [dnspython](https://www.dnspython.org/): `pip install -r requirements.txt`
 
 ## Usage
 
@@ -20,20 +19,37 @@ Email Verifier is a simple Python application built with Tkinter that allows you
 python application.py
 ```
 
-3. The Email Verifier GUI will open with a terminal-like appearance.
+3. The Email Verifier window opens. Press Enter or click **Check**; results appear in the
+   window as each check finishes (✓ passed, ✗ failed, ? couldn't tell).
 
 4. Enter the email address you want to verify in the "Enter an email address" field.
 
-5. Choose the tests you want to perform by selecting the checkboxes:
+5. Choose the checks to run:
 
-   - **Strict Test**: Checks the email address using a simple regex pattern.
-   - **Test according to RFC guidelines**: Checks the email address using a regex pattern based on RFC standards.
-   - **Check whether the mail domain is available**: Verifies if the domain in the email address is available.
-   - **Verify Email using smtplib**: Attempts to verify the email address using the `smtplib` library.
+   - **Strict format check**: practical syntax check (any letter case, `+tags` allowed).
+   - **Format according to RFC rules**: looser RFC 5322 syntax, including quoted names.
+   - **Mail domain can receive email**: looks up the domain's MX records (or an address
+     record, per RFC 5321) and picks the highest-priority server.
+   - **Ask the mail server if the mailbox exists**: talks SMTP to that server. Domains that
+     accept every address ("catch-all") and networks that block outbound port 25 are
+     reported as *couldn't tell* rather than *invalid*. You can optionally set the sender
+     address used for this check.
 
-6. Click the "Check" button to perform the selected tests.
+## Using the checks in code
 
-7. A pop-up message will indicate whether the email address is valid and, if selected, whether it is verified using `smtplib`.
+```python
+from verifier import Email_Verifier
+
+v = Email_Verifier("someone@example.com")
+v.check_regex(), v.check_domain(), v.verify_email()   # verify_email: True / False / None
+print(v.last_reason)
+```
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt && pytest
+```
 
 ## Notes
 
